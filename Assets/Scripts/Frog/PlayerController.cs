@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -125,6 +126,7 @@ public class PlayerController : MonoBehaviour
     public void JumpAniamtionEvent()
     {
         _isJump = true;
+        
         _spriteRenderer.sortingLayerName = "UI";
         Debug.Log(dir );
     }
@@ -132,5 +134,18 @@ public class PlayerController : MonoBehaviour
     {
         _isJump = false;
         _spriteRenderer.sortingLayerName = "Character";
+    }
+
+    
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Border"))
+        {
+            Debug.Log("GameOver");
+        }if (other.gameObject.CompareTag("abstacle")&& !_isJump)
+        {
+            Debug.Log("Dead");
+        }
     }
 }
