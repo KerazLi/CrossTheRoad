@@ -6,6 +6,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private enum Direction
+    {
+        Left,
+        Right,
+        Up
+    }
+
+    private Direction dir;
+
     private Animator _animator;
     private Rigidbody2D _rb;
     public float jumpDistance;
@@ -14,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 _distance;
     private bool _isJump;
     private bool _canJump;
+    private Vector2 _touchPosition;
 
     private void Awake()
     {
@@ -23,11 +33,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //FIXME:临时操作
-        /*if (_distance.y-transform.position.y<=0.1f)
-        {
-            _isJump = false;
-        }*/
         if (_canJump)
         {
             JumpTrigger();
@@ -49,8 +54,8 @@ public class PlayerController : MonoBehaviour
         if (context.performed && !_isJump)
         {
             _moveDistance = jumpDistance;
-            Debug.Log("JUMP!!"+" "+_moveDistance);
-            _distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
+            //Debug.Log("JUMP!!"+" "+_moveDistance);
+            //_distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
             _canJump = true;
         }
     }
@@ -63,7 +68,6 @@ public class PlayerController : MonoBehaviour
         }
         if (context.canceled && _buttonHeld && !_isJump)
         {
-            _distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
             //Debug.Log("LONGJUMP!!"+" "+moveDistance);
             _buttonHeld = false;
             _canJump = true;
@@ -71,6 +75,21 @@ public class PlayerController : MonoBehaviour
     }
     public void GetTouchPosition(InputAction.CallbackContext context)
     {
+        if (context.performed)
+        {
+            _touchPosition = Camera.main.ScreenToWorldPoint(context.ReadValue<Vector2>());
+            var offset = ((Vector3)_touchPosition - transform.position).normalized;
+            if (Mathf.Abs(offset.x)<=0.7f)
+            {
+                dir = Direction.Up;
+            }else if (offset.x<0)
+            {
+                dir = Direction.Left;
+            }else
+            {
+                dir = Direction.Right;
+            }
+        }
         
     }
     #endregion
@@ -79,11 +98,26 @@ public class PlayerController : MonoBehaviour
     {
         _canJump = false;
         _animator.SetTrigger("Jump");
+        switch (dir)
+        {
+            case Direction.Left:
+                _distance = new Vector2(transform.position.x- _moveDistance,transform.position.y );
+                break;
+            case Direction.Right:
+                _distance = new Vector2(transform.position.x+ _moveDistance,transform.position.y );
+                break;
+            case Direction.Up:
+                _distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     public void JumpAniamtionEvent()
     {
         _isJump = true;
+        //Debug.Log(dir );
     }
     public void JumpAnimationEndEvent()
     {
