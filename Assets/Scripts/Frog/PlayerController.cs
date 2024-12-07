@@ -24,11 +24,13 @@ public class PlayerController : MonoBehaviour
     private bool _isJump;
     private bool _canJump;
     private Vector2 _touchPosition;
+    private SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -101,13 +103,19 @@ public class PlayerController : MonoBehaviour
         switch (dir)
         {
             case Direction.Left:
+                _animator.SetBool("isSlide",true);
                 _distance = new Vector2(transform.position.x- _moveDistance,transform.position.y );
+                transform.localScale = Vector3.one;
                 break;
             case Direction.Right:
+                _animator.SetBool("isSlide",true);
                 _distance = new Vector2(transform.position.x+ _moveDistance,transform.position.y );
+                transform.localScale = new Vector3(-1,1,1);
                 break;
             case Direction.Up:
+                _animator.SetBool("isSlide",false);
                 _distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
+                transform.localScale = Vector3.one;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -117,10 +125,12 @@ public class PlayerController : MonoBehaviour
     public void JumpAniamtionEvent()
     {
         _isJump = true;
-        //Debug.Log(dir );
+        _spriteRenderer.sortingLayerName = "UI";
+        Debug.Log(dir );
     }
     public void JumpAnimationEndEvent()
     {
         _isJump = false;
+        _spriteRenderer.sortingLayerName = "Character";
     }
 }

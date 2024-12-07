@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class CameraControl : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CameraControl : MonoBehaviour
     public float offsetY;
     public float zoomBase;
     private float _ratito;
+    private ObjectPool<GameObject> _pool;
     
 
     private void Start()
@@ -23,6 +25,8 @@ public class CameraControl : MonoBehaviour
         {
             Debug.Log("Camera is null");
         }
+        
+        
     }
 
     private void LateUpdate()
