@@ -6,63 +6,87 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    private Animator _animator;
+    private Rigidbody2D _rb;
     public float jumpDistance;
-    private float moveDistance;
-    private bool buttonHeld;
-    private Vector2 distance;
-    private bool isJump;
+    private float _moveDistance;
+    private bool _buttonHeld;
+    private Vector2 _distance;
+    private bool _isJump;
+    private bool _canJump;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
         //FIXME:临时操作
-        if (distance.y-transform.position.y<=0.1f)
+        /*if (_distance.y-transform.position.y<=0.1f)
         {
-            isJump = false;
+            _isJump = false;
+        }*/
+        if (_canJump)
+        {
+            JumpTrigger();
         }
     }
 
     private void FixedUpdate()
     {
-        if (isJump)
+        if (_isJump)
         {
-            rb.position = Vector2.Lerp(transform.position, distance, 0.134f); 
+            _rb.position = Vector2.Lerp(transform.position, _distance, 0.134f); 
         }
         
     }
 
+    #region Input 输入移动的回调函数
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed && !isJump)
+        if (context.performed && !_isJump)
         {
-            moveDistance = jumpDistance;
-            Debug.Log("JUMP!!"+" "+moveDistance);
-            distance = new Vector2(transform.position.x,transform.position.y + moveDistance);
-            isJump = true;
+            _moveDistance = jumpDistance;
+            Debug.Log("JUMP!!"+" "+_moveDistance);
+            _distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
+            _canJump = true;
         }
     }
     public void LongJump(InputAction.CallbackContext context)
     {
-        if (context.performed && !isJump)
+        if (context.performed && !_isJump)
         {
-            moveDistance = jumpDistance * 2;
-            buttonHeld = true;
+            _moveDistance = jumpDistance * 2;
+            _buttonHeld = true;
         }
-        if (context.canceled && buttonHeld && !isJump)
+        if (context.canceled && _buttonHeld && !_isJump)
         {
-            distance = new Vector2(transform.position.x,transform.position.y + moveDistance);
+            _distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
             //Debug.Log("LONGJUMP!!"+" "+moveDistance);
-            buttonHeld = false;
-            isJump = true;
+            _buttonHeld = false;
+            _canJump = true;
         }
     }
     public void GetTouchPosition(InputAction.CallbackContext context)
     {
         
+    }
+    #endregion
+
+    private void JumpTrigger()
+    {
+        _canJump = false;
+        _animator.SetTrigger("Jump");
+    }
+
+    public void JumpAniamtionEvent()
+    {
+        _isJump = true;
+    }
+    public void JumpAnimationEndEvent()
+    {
+        _isJump = false;
     }
 }
