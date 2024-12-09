@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     
     private RaycastHit2D[] result=new RaycastHit2D[2];
+    private bool isDead;
+    public TerrainManager terrainManager;
 
     private void Awake()
     {
@@ -158,14 +160,18 @@ public class PlayerController : MonoBehaviour
     public void JumpAniamtionEvent()
     {
         _isJump = true;
-        
+        transform.parent=null;
         _spriteRenderer.sortingLayerName = "UI";
-        Debug.Log(dir );
+        //Debug.Log(dir );
     }
     public void JumpAnimationEndEvent()
     {
         _isJump = false;
         _spriteRenderer.sortingLayerName = "Character";
+        if (dir==Direction.Up && !isDead)
+        {
+            terrainManager.CheckPosition();
+        }
     }
 
     
@@ -175,29 +181,37 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Water") && !_isJump)
         {
             Physics2D.RaycastNonAlloc(transform.position + Vector3.up * 0.1f, Vector2.zero, result);
+            bool isWater = true;
             foreach (var hit2D in result)
             {
                 if (hit2D.collider==null)
                 {
                     continue;
                 }
-
                 if (hit2D.collider.CompareTag("Wood"))
                 {
-                    Debug.Log("在木板上");
+                    //Debug.Log("在木板上");
+                    transform.parent=hit2D.collider.transform;
+                    isWater = false;
                 }
-                /*else
+                if (isWater && !_isJump)
                 {
-                    Debug.Log("在河底");
-                }*/
+                    Debug.Log("InWater Game Over");
+                    isDead = true;
+                }
+                
             }
         }
         if (other.gameObject.CompareTag("Border")||other.gameObject.CompareTag("Car"))
         {
             Debug.Log("GameOver");
+            isDead = true;
         }if (other.gameObject.CompareTag("abstacle")&& !_isJump)
         {
             Debug.Log("Dead");
+            isDead = true;
         }
     }
+
+    
 }

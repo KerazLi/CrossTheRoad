@@ -20,13 +20,10 @@ public class CameraControl : MonoBehaviour
         if (Camera.main != null)
         {
         Camera.main.orthographicSize = zoomBase * _ratito * 0.5f;
-        
         }else
         {
             Debug.Log("Camera is null");
         }
-        
-        
     }
 
     private void LateUpdate()
