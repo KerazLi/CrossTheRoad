@@ -7,24 +7,36 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    // 定义方向枚举，用于表示玩家的移动方向
     private enum Direction
     {
         Left,
         Right,
         Up
     }
-
+    
+    // 当前移动方向
     private Direction dir;
-
+    
+    // Animator组件，用于控制角色动画
     private Animator _animator;
+    // Rigidbody2D组件，用于物理模拟和移动
     private Rigidbody2D _rb;
+    // 跳跃距离
     public float jumpDistance;
+    // 移动距离
     private float _moveDistance;
+    // 按钮是否被按住，用于持续移动控制
     private bool _buttonHeld;
+    // 记录移动的距离，用于计算和更新位置
     private Vector2 _distance;
+    // 是否正在跳跃
     private bool _isJump;
+    // 是否可以跳跃，用于控制跳跃时机
     private bool _canJump;
+    // 触摸位置，用于移动设备控制
     private Vector2 _touchPosition;
+    // SpriteRenderer组件，用于渲染角色精灵
     private SpriteRenderer _spriteRenderer;
 
     private void Awake()
@@ -34,31 +46,49 @@ public class PlayerController : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    /// <summary>
+    /// 在游戏循环的更新阶段执行逻辑。
+    /// </summary>
     private void Update()
     {
+        // 检查是否可以跳跃
         if (_canJump)
         {
+            // 触发跳跃动作
             JumpTrigger();
         }
     }
 
+    /// <summary>
+    /// 固定更新方法，用于处理物理引擎相关的逻辑。
+    /// </summary>
     private void FixedUpdate()
     {
+        // 检查是否处于跳跃状态
         if (_isJump)
         {
+            // 当处于跳跃状态时，平滑地改变物体的位置，使其移动到目标距离。
+            // 使用Vector2.Lerp实现从当前位置到目标位置的平滑过渡。
             _rb.position = Vector2.Lerp(transform.position, _distance, 0.134f); 
         }
         
     }
 
     #region Input 输入移动的回调函数
+    /// <summary>
+    /// 处理跳跃动作的函数
+    /// </summary>
+    /// <param name="context">包含输入动作回调上下文的信息</param>
     public void Jump(InputAction.CallbackContext context)
     {
+        // 当跳跃动作被执行且当前状态不是跳跃时
         if (context.performed && !_isJump)
         {
+            // 设置移动距离为跳跃距离
             _moveDistance = jumpDistance;
             //Debug.Log("JUMP!!"+" "+_moveDistance);
             //_distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
+            // 允许跳跃
             _canJump = true;
         }
     }
@@ -140,7 +170,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Border"))
+        if (other.gameObject.CompareTag("Border")||other.gameObject.CompareTag("Car"))
         {
             Debug.Log("GameOver");
         }if (other.gameObject.CompareTag("abstacle")&& !_isJump)
