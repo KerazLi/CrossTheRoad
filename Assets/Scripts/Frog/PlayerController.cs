@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 _touchPosition;
     // SpriteRenderer组件，用于渲染角色精灵
     private SpriteRenderer _spriteRenderer;
+    
+    private RaycastHit2D[] result=new RaycastHit2D[2];
 
     private void Awake()
     {
@@ -170,6 +172,26 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
+        if (other.CompareTag("Water") && !_isJump)
+        {
+            Physics2D.RaycastNonAlloc(transform.position + Vector3.up * 0.1f, Vector2.zero, result);
+            foreach (var hit2D in result)
+            {
+                if (hit2D.collider==null)
+                {
+                    continue;
+                }
+
+                if (hit2D.collider.CompareTag("Wood"))
+                {
+                    Debug.Log("在木板上");
+                }
+                /*else
+                {
+                    Debug.Log("在河底");
+                }*/
+            }
+        }
         if (other.gameObject.CompareTag("Border")||other.gameObject.CompareTag("Car"))
         {
             Debug.Log("GameOver");
