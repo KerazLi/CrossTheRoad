@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using EventHandler = Utilities.EventHandler;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class PlayerController : MonoBehaviour
         Right,
         Up
     }
+
+    [Header("得分")] 
+    public int stepPoint;
+    private int pointResult;
+    [Header("跳跃")]
     
     // 当前移动方向
     private Direction dir;
@@ -22,6 +28,8 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     // Rigidbody2D组件，用于物理模拟和移动
     private Rigidbody2D _rb;
+
+    private PlayerInput _playerInput;
     // 跳跃距离
     public float jumpDistance;
     // 移动距离
@@ -41,13 +49,14 @@ public class PlayerController : MonoBehaviour
     
     private RaycastHit2D[] result=new RaycastHit2D[2];
     private bool isDead;
-    public TerrainManager terrainManager;
+    //public TerrainManager terrainManager;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _playerInput = GetComponent<PlayerInput>();
     }
 
     /// <summary>
@@ -55,6 +64,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        if (isDead)
+        {
+            DisableInput();
+            return;
+        }
         // 检查是否可以跳跃
         if (_canJump)
         {
@@ -88,6 +102,10 @@ public class PlayerController : MonoBehaviour
         // 当跳跃动作被执行且当前状态不是跳跃时
         if (context.performed && !_isJump)
         {
+            if (dir==Direction.Up)
+            {
+                pointResult+=stepPoint;
+            }
             // 设置移动距离为跳跃距离
             _moveDistance = jumpDistance;
             //Debug.Log("JUMP!!"+" "+_moveDistance);
@@ -108,6 +126,10 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("LONGJUMP!!"+" "+moveDistance);
             _buttonHeld = false;
             _canJump = true;
+            if (dir==Direction.Up)
+            {
+                pointResult+=stepPoint;
+            }
         }
     }
     public void GetTouchPosition(InputAction.CallbackContext context)
@@ -170,7 +192,9 @@ public class PlayerController : MonoBehaviour
         _spriteRenderer.sortingLayerName = "Character";
         if (dir==Direction.Up && !isDead)
         {
-            terrainManager.CheckPosition();
+            //terrainManager.CheckPosition();
+            EventHandler.CallGetPointEvent(pointResult);
+            //Debug.Log("总得分 "+ pointResult);
         }
     }
 
@@ -211,7 +235,17 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Dead");
             isDead = true;
         }
+
+        if (isDead)
+        {
+            EventHandler.CallGameOverEvent();
+        }
     }
 
-    
+    private void DisableInput()
+    {
+        _playerInput.enabled = false;
+    }
+
+
 }
