@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     // Rigidbody2D组件，用于物理模拟和移动
     private Rigidbody2D _rb;
+    
+    private BoxCollider2D _boxCollider2D;
 
     private PlayerInput _playerInput;
     // 跳跃距离
@@ -57,6 +59,7 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _playerInput = GetComponent<PlayerInput>();
+        _boxCollider2D = GetComponent<BoxCollider2D>();
     }
 
     /// <summary>
@@ -195,6 +198,10 @@ public class PlayerController : MonoBehaviour
             //terrainManager.CheckPosition();
             EventHandler.CallGetPointEvent(pointResult);
             //Debug.Log("总得分 "+ pointResult);
+            if (isDead)
+            {
+                Time.timeScale = 0;
+            }
         }
     }
 
@@ -238,7 +245,9 @@ public class PlayerController : MonoBehaviour
 
         if (isDead)
         {
+            _boxCollider2D.enabled = false;
             EventHandler.CallGameOverEvent();
+            
         }
     }
 

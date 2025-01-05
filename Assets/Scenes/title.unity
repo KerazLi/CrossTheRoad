@@ -212,6 +212,7 @@ GameObject:
   - component: {fileID: 731401265}
   - component: {fileID: 731401264}
   - component: {fileID: 731401263}
+  - component: {fileID: 731401266}
   m_Layer: 5
   m_Name: FadeCanvas
   m_TagString: Untagged
@@ -232,7 +233,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2107858647}
-  m_Father: {fileID: 1623551078}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -289,7 +290,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1623551077}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -302,6 +303,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &731401266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731401261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a051fd433f2d9a14685c7eb49bb2461d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scaler: 2
 --- !u!1 &903442599
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,8 +799,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 731401262}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1981939616
@@ -971,7 +984,6 @@ GameObject:
   - component: {fileID: 2107858649}
   - component: {fileID: 2107858648}
   - component: {fileID: 2107858650}
-  - component: {fileID: 2107858651}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -1048,23 +1060,11 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &2107858651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2107858646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a051fd433f2d9a14685c7eb49bb2461d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scaler: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1623551078}
+  - {fileID: 731401262}
   - {fileID: 903442603}
   - {fileID: 921527137}

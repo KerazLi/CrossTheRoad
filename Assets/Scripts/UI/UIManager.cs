@@ -21,10 +21,7 @@ public class UIManager : MonoBehaviour
     private void OnGameOverEvent()
     {
         gameOverPanel.SetActive(true);
-        if (gameOverPanel.activeInHierarchy)
-        {
-            Time.timeScale = 0;
-        }
+        
     }
 
     private void Start()
@@ -45,6 +42,12 @@ public class UIManager : MonoBehaviour
 
     public void RestGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        gameOverPanel.SetActive(false);
+        TransitionManager.instance.Transition("GamePlay");
+    }
+    public void BackMainPanel()
+    {
+        gameOverPanel.SetActive(false);
+        TransitionManager.instance.Transition("title");
     }
 }
