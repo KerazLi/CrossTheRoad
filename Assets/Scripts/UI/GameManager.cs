@@ -38,7 +38,7 @@ namespace UI
             }
             else
             {
-                DontDestroyOnLoad(this.gameObject);
+                Destroy(this.gameObject);
             }
             DontDestroyOnLoad(this);
             

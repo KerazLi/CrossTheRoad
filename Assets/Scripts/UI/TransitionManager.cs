@@ -19,7 +19,7 @@ public class TransitionManager : MonoBehaviour
         }
         else
         {
-            DontDestroyOnLoad(this.gameObject);
+            Destroy(this.gameObject);
         }
 
         DontDestroyOnLoad(this);

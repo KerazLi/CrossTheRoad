@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,11 @@ public class PlayerController : MonoBehaviour
         Right,
         Up
     }
+    [Header("Sign")]
+    public SpriteRenderer sign;
+    public Sprite upSign;
+    public Sprite leftSign;
+    public Sprite rightSign;
 
     [Header("得分")] 
     public int stepPoint;
@@ -102,6 +108,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="context">包含输入动作回调上下文的信息</param>
     public void Jump(InputAction.CallbackContext context)
     {
+        
         // 当跳跃动作被执行且当前状态不是跳跃时
         if (context.performed && !_isJump)
         {
@@ -115,14 +122,18 @@ public class PlayerController : MonoBehaviour
             //_distance = new Vector2(transform.position.x,transform.position.y + _moveDistance);
             // 允许跳跃
             _canJump = true;
+            AudioManager.instance.SetJumpClip(0);
         }
     }
     public void LongJump(InputAction.CallbackContext context)
     {
+        
         if (context.performed && !_isJump)
         {
             _moveDistance = jumpDistance * 2;
             _buttonHeld = true;
+            AudioManager.instance.SetJumpClip(1);
+            sign.gameObject.SetActive(true);
         }
         if (context.canceled && _buttonHeld && !_isJump)
         {
@@ -133,6 +144,7 @@ public class PlayerController : MonoBehaviour
             {
                 pointResult+=stepPoint;
             }
+            sign.gameObject.SetActive(false);
         }
     }
     public void GetTouchPosition(InputAction.CallbackContext context)
@@ -144,12 +156,27 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Abs(offset.x)<=0.7f)
             {
                 dir = Direction.Up;
+                sign.sprite = upSign;
             }else if (offset.x<0)
             {
                 dir = Direction.Left;
+                if (transform.localScale.x==-1)
+                {
+                    sign.sprite = rightSign;
+                }else
+                {
+                    sign.sprite = leftSign;
+                }
             }else
             {
                 dir = Direction.Right;
+                if (transform.localScale.x==-1)
+                {
+                    sign.sprite = leftSign;
+                }else
+                {
+                    sign.sprite = rightSign;
+                }
             }
         }
         
@@ -187,6 +214,7 @@ public class PlayerController : MonoBehaviour
         _isJump = true;
         transform.parent=null;
         _spriteRenderer.sortingLayerName = "UI";
+        AudioManager.instance.PlayJumpFX();
         //Debug.Log(dir );
     }
     public void JumpAnimationEndEvent()
