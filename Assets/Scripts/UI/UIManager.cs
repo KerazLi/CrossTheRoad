@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
 {
     public Text scoretext;
     public GameObject gameOverPanel ;
+    public GameObject leaderBoardPanel;
 
     private void OnEnable()
     {
@@ -49,5 +50,9 @@ public class UIManager : MonoBehaviour
     {
         gameOverPanel.SetActive(false);
         TransitionManager.instance.Transition("title");
+    }
+    public void ShowLeaderBoard()
+    {
+        leaderBoardPanel.SetActive(true);
     }
 }

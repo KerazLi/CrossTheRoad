@@ -11,10 +11,11 @@ namespace UI
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        public static GameManager instance;
         /// <summary>
         /// 存储游戏分数的列表。
         /// </summary>
-        public List<int> scoreList = new List<int>();
+        public List<int> scoreList;
         /// <summary>
         /// 当前游戏得分。
         /// </summary>
@@ -29,9 +30,18 @@ namespace UI
         /// </summary>
         private void Awake()
         {
-            DontDestroyOnLoad(this);
-            scoreList= GetScoreListData();
             dataPath = Application.persistentDataPath + "/leaderboard.json";
+            scoreList= GetScoreListData();
+            if (instance==null)
+            {
+                instance = this;
+            }
+            else
+            {
+                DontDestroyOnLoad(this.gameObject);
+            }
+            DontDestroyOnLoad(this);
+            
         }
 
         /// <summary>
@@ -80,11 +90,15 @@ namespace UI
         /// <returns>排行榜数据列表。</returns>
         private List<int> GetScoreListData()
         {
+            // 检查指定路径的文件是否存在
             if (File.Exists(dataPath))
             {
+                // 读取文件中的所有文本
                 string json = File.ReadAllText(dataPath);
+                // 将读取的JSON字符串反序列化为List<int>对象并返回
                 return JsonConvert.DeserializeObject<List<int>>(json);
             }
+            // 如果文件不存在，返回一个新的空List<int>对象
             return new List<int>();
             
         }
